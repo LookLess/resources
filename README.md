@@ -2,7 +2,7 @@
 others
 
 private static ScriptEngineManager sem = new ScriptEngineManager();
-	
+	//var b64map="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	public static String unserialize(String param){
 		long st=System.currentTimeMillis();
 	    //此处加个为空判断，符合则原样返回。(测试过有可能传空的进来swx191794)
