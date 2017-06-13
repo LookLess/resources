@@ -134,3 +134,90 @@ private static ScriptEngineManager sem = new ScriptEngineManager();
 		String []resultType={};
 		return arr.toArray(resultType);
 	}
+
+
+/**
+ * @author 仿progress组件。
+ */
+define([], function () {
+    "use strict";
+    function build(option) {
+        var opt = $.extend(true,
+            {
+                zoom: 1,
+                width: 96,
+                height: 96,
+                r: 33,
+                R: 40,
+                color: "#7fcf92",
+                bgColor: "#dedfe1",
+                fontSize: 19,
+                fontFamily: "Microsoft YaHei",
+                value: 0,
+                label: ""
+            },
+            option);
+        progressCycle(opt);
+    }
+
+    function progressCycle(option) {
+        var width = option.width || 160;
+        var height = option.height || 160;
+        var e = option.wrap = $("#" + option.id);
+        var c = $("<canvas></canvas>");
+        option.canvas = c;
+        option.ctx = c[0].getContext("2d");
+        c.attr({
+            width: width * option.zoom,
+            height: height * option.zoom,
+            style: "width:" + width + "px;height:" + height + "px;"
+        });
+        e.empty();
+        e.append(c);
+        canvasLib.drawBackground.call(option, 360, option.bgColor);
+        canvasLib.drawProgress.call(option, 270, option.value / 100 * 360, option.color);
+        canvasLib.drawText.call(option);
+        canvasLib.appendLabel.call(option);
+    }
+
+    var canvasLib = {
+        drawBackground: function (angle, color) {
+            var ctx = this.ctx;
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            ctx.arc(this.width * this.zoom / 2, this.height * this.zoom / 2, this.R || 80, 0, angle * Math.PI / 180, false);
+            ctx.arc(this.width * this.zoom / 2, this.height * this.zoom / 2, this.r || 70, 0, angle * Math.PI / 180, true);
+            ctx.closePath();
+            ctx.fill();
+        }, drawProgress: function (aStart, aEnd, color) {
+            var ctx = this.ctx;
+            ctx.beginPath();
+            ctx.fillStyle = color;
+            ctx.strokeStyle = color;
+            ctx.arc(this.width * this.zoom / 2, this.height * this.zoom / 2, this.R || 80, aStart * Math.PI / 180, ( aEnd + aStart) * Math.PI / 180, false);
+            ctx.arc(this.width * this.zoom / 2, this.height * this.zoom / 2, this.r || 70, ( aEnd + aStart) * Math.PI / 180, aStart * Math.PI / 180, true);
+            ctx.closePath();
+            ctx.fill();
+        }, drawText: function () {
+            var ctx = this.ctx;
+            var text = parseInt((this.value || 0) * 100) / 100 + "%";
+            ctx.font = this.fontSize + "px " + this.fontFamily;
+            ctx.fillText(text, 15 + (6 - text.length) * 5, this.height / 2 + this.fontSize / 2 - 2);
+        }, appendLabel: function () {
+            var e = $("#" + this.id)
+            e.parent().css({dispaly: "inline-block"});
+            if (e.next().length == 0) {
+                e.after("<p></p>");
+            }
+            e.next().text(this.label).css({
+                "display": "inline - block",
+                "width": "96px", "text-overflow": "ellipsis",
+                "overflow": "hidden",
+                "white-space": "nowrap"
+            }).attr({title: this.label});
+
+        }
+    };
+    return build;
+});
