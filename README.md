@@ -1,5 +1,9 @@
 # resources
 others
+stream().filter(p -> StringUtils.isNotBlank(p)).collect(
+            Collectors.joining(",")
+JSON.parseObject(result,
+            new TypeReference<ICloneResult<List<OSTemplateBO>>>() {});
 
 private static ScriptEngineManager sem = new ScriptEngineManager();
 	//var b64map="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
